@@ -13,15 +13,45 @@ class WhaleIrLexer : LexerBase() {
   private var tokenType: IElementType? = null
 
   private val keywords = setOf(
-    "module", "target", "datalayout", "triple", "define", "declare", "func", "fn",
-    "ret", "call", "br", "cond_br", "switch", "invoke", "resume", "unreachable",
-    "add", "sub", "mul", "div", "rem", "shl", "lshr", "ashr", "and", "or", "xor",
-    "alloca", "load", "store", "icmp", "cmp", "phi", "select",
+    // Module header & metadata
+    "module", "format_version", "semantics_version", "target", "datalayout",
+    "endian", "little", "big", "global", "align", "id", "init_expr",
+    "declare", "linkage", "internal", "external", "link_name",
+
+    // Functions and calls
+    "fn", "call", "indirect", "whale", "sysv64", "function_addr", "null_function",
+
+    // Terminators
+    "ret", "br", "cbr", "switch", "trap",
+
+    // Instructions
+    "alloca", "load", "store", "const", "const_decl", "undef", "mov", "not",
+    "cmp", "icmp", "fcmp", "select", "phi", "extract", "gep", "memcpy", "memset",
+    "trap_if", "reason",
+
+    // Arithmetic & Bitwise
+    "add", "sub", "mul", "udiv", "sdiv", "urem", "srem",
+    "fadd", "fsub", "fmul", "fdiv", "frem",
+    "and", "or", "xor", "shl", "lshr", "ashr",
+    "uadd", "usub", "umul", "sadd", "ssub", "smul",
+    "uadd_chk", "usub_chk", "umul_chk", "sadd_chk", "ssub_chk", "smul_chk",
+
+    // Comparison predicates
+    "eq", "ne", "slt", "sle", "sgt", "sge", "ult", "ule", "ugt", "uge",
+    "oeq", "one", "olt", "ole", "ogt", "oge", "ord", "uno", "ueq", "une",
+    "feq", "fne", "flt", "fle", "fgt", "fge",
+
+    // Casts
+    "to", "zext", "sext", "trunc", "fext", "ftrunc",
+    "itof_s", "itof_u", "ftoi_s", "ftoi_u", "bitcast", "ptrtoint", "inttoptr",
+
+    // Literals / Constants
     "true", "false", "null", "none"
   )
 
   private val types = setOf(
-    "void", "ptr", "label"
+    "void", "bool", "ptr", "fnptr", "label", "array", "struct", "tuple",
+    "f16", "f32", "f64"
   )
 
   override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
@@ -140,7 +170,8 @@ class WhaleIrLexer : LexerBase() {
       var j = i + 1
       while (j < endOffset && isIdentifierPart(buffer[j])) j++
       if (j < endOffset && buffer[j] == ':') {
-        emit(WhaleIrTokens.LABEL, j)
+        if (j + 1 < endOffset && buffer[j + 1] == ':') return false
+        emit(WhaleIrTokens.LABEL, j + 1)
         return true
       }
     }
@@ -181,7 +212,7 @@ class WhaleIrLexer : LexerBase() {
     val text = buffer.subSequence(position, i).toString().lowercase()
     val type = when {
       keywords.contains(text) -> WhaleIrTokens.KEYWORD
-      types.contains(text) || text.matches(Regex("i[0-9]+")) -> WhaleIrTokens.TYPE
+      types.contains(text) || text.matches(INT_TYPE_REGEX) -> WhaleIrTokens.TYPE
       else -> WhaleIrTokens.IDENT
     }
     emit(type, i)
@@ -206,5 +237,9 @@ class WhaleIrLexer : LexerBase() {
     tokenType = type
     tokenEnd = end
     position = end
+  }
+
+  companion object {
+    private val INT_TYPE_REGEX = Regex("[iu][0-9]+")
   }
 }
