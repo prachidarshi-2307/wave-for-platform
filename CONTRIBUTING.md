@@ -13,7 +13,7 @@ The primary WfP plugin code resides in `plugins/wave`:
 - **Resources** (icons, plugin.xml, properties): `plugins/wave/src/main/resources/`
 - **Tests**: `plugins/wave/src/test/kotlin/` and `plugins/wave/src/test/testData/`
 
-**Note**: `*.iml` files are the source of truth for the project model. If you modify an `.iml` file or project structure, you must regenerate the Bazel metadata by running `./build/jpsModelToBazel.cmd` (or `.sh`). Do not manually edit `BUILD.bazel` files.
+**Note**: `*.iml` files are the source of truth for the project model. If you modify an `.iml` file or project structure, you must regenerate the Bazel metadata by running `./build/jpsModelToBazelCommunityOnly.cmd`. Do not manually edit `BUILD.bazel` files.
 
 ## Toolchains and Prerequisites
 - **Supported Launcher Hosts**: Tools and toolchains execute exclusively on the local IDE host. Remote, container, and WSL toolchains are **not** supported by WfP.
@@ -30,10 +30,16 @@ We provide static checks and opt-in compilation via Node.js scripts:
   When combined with `--compile` (`node build/check.mjs --compile --dry-run`), this only prints the Bazel command without executing it. Use this to inspect the target configuration.
 
 ## Testing
-Run targeted tests using `tests.cmd` (or `tests.sh` on Unix/macOS) by specifying the module and fully qualified test name. 
-Example targeted test for WfP:
+Run targeted tests using the cross-platform `tests.cmd` script by specifying the module and fully qualified test name. 
+
+Example targeted test for WfP on Unix/macOS:
 ```bash
 ./tests.cmd --module intellij.wave --test dev.wavelang.intellij.wave.highlight.WaveLexerTest
+```
+
+Example targeted test for WfP on Windows:
+```cmd
+tests.cmd --module intellij.wave --test dev.wavelang.intellij.wave.highlight.WaveLexerTest
 ```
 *(Simple class names or unqualified patterns do not match; always specify the exact module and full class name.)*
 
