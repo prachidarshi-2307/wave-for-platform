@@ -15,19 +15,13 @@ class WhaleIrLexer : LexerBase() {
   private val keywords = setOf(
     "module", "target", "datalayout", "triple", "define", "declare", "func", "fn",
     "ret", "call", "br", "cond_br", "switch", "invoke", "resume", "unreachable",
-    "add", "fadd", "sub", "fsub", "mul", "fmul", "udiv", "sdiv", "fdiv",
-    "urem", "srem", "frem", "shl", "lshr", "ashr", "and", "or", "xor",
-    "extractelement", "insertelement", "shufflevector", "extractvalue", "insertvalue",
-    "alloca", "load", "store", "fence", "cmpxchg", "atomicrmw", "getelementptr",
-    "trunc", "zext", "sext", "fptrunc", "fpext", "fptoui", "fptosi", "uitofp", "sitofp",
-    "ptrtoint", "inttoptr", "bitcast", "addrspacecast", "icmp", "fcmp", "phi", "select",
-    "callbr", "va_arg", "landingpad", "catchpad", "cleanuppad",
-    "true", "false", "null", "undef", "poison", "none"
+    "add", "sub", "mul", "div", "rem", "shl", "lshr", "ashr", "and", "or", "xor",
+    "alloca", "load", "store", "icmp", "cmp", "phi", "select",
+    "true", "false", "null", "none"
   )
 
   private val types = setOf(
-    "void", "half", "bfloat", "float", "double", "fp128", "x86_fp80", "ppc_fp128",
-    "ptr", "label", "metadata", "token"
+    "void", "ptr", "label"
   )
 
   override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
