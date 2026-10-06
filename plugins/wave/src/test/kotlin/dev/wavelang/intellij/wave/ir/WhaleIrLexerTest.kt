@@ -77,7 +77,7 @@ class WhaleIrLexerTest {
   @Test
   fun testValueIdsAndLabels() {
     val lexer = WhaleIrLexer()
-    lexer.start("%0 @main entry:")
+    lexer.start("%0 @main entry: 0: 1:")
 
     assertEquals(WhaleIrTokens.VALUE_ID, lexer.tokenType)
     assertEquals("%0", lexer.bufferSequence.substring(lexer.tokenStart, lexer.tokenEnd))
@@ -93,6 +93,18 @@ class WhaleIrLexerTest {
 
     assertEquals(WhaleIrTokens.LABEL, lexer.tokenType)
     assertEquals("entry:", lexer.bufferSequence.substring(lexer.tokenStart, lexer.tokenEnd))
+    lexer.advance()
+
+    lexer.advance() // space
+
+    assertEquals(WhaleIrTokens.LABEL, lexer.tokenType)
+    assertEquals("0:", lexer.bufferSequence.substring(lexer.tokenStart, lexer.tokenEnd))
+    lexer.advance()
+
+    lexer.advance() // space
+
+    assertEquals(WhaleIrTokens.LABEL, lexer.tokenType)
+    assertEquals("1:", lexer.bufferSequence.substring(lexer.tokenStart, lexer.tokenEnd))
     lexer.advance()
 
     assertEquals(null, lexer.tokenType)

@@ -166,7 +166,7 @@ class WhaleIrLexer : LexerBase() {
   private fun scanLabel(): Boolean {
     var i = position
     if (buffer[i] == '^') i++
-    if (i < endOffset && (buffer[i].isLetter() || buffer[i] == '_' || buffer[i] == '.')) {
+    if (i < endOffset && (buffer[i].isLetterOrDigit() || buffer[i] == '_' || buffer[i] == '.')) {
       var j = i + 1
       while (j < endOffset && isIdentifierPart(buffer[j])) j++
       if (j < endOffset && buffer[j] == ':') {
